@@ -19,9 +19,10 @@ public class Controller {
         this.view = view;
         this.model = model;
 
-        LOG.info("Controller>startServer");
+        LOG.info("Controller created.");
 
         try {
+            LOG.info("Try to start server.");
             Model.startServer();
         } catch (IOException e) {
             e.printStackTrace();

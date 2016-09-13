@@ -1,11 +1,15 @@
 package Model;
 
+import org.apache.log4j.Logger;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class Model {
+
+    private static final Logger LOG = Logger.getLogger(Model.class);
 
     private static ArrayList<NewUserThread> userList;
 
@@ -20,6 +24,8 @@ public class Model {
             NewUserThread thread = new NewUserThread(accept);
 
             userList.add(thread);
+
+            LOG.info("New user connected!");
         }
     }
 
