@@ -19,6 +19,7 @@ public class Controller {
         this.view = view;
         this.model = model;
 
+
         LOG.info("Controller created.");
 
         try {
