@@ -2,6 +2,7 @@ package Model;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -41,63 +42,60 @@ public class NewUserThread extends Thread {
                 DocumentBuilder builder = f.newDocumentBuilder();
 
                 String xml = in.readUTF();
+                System.out.println(xml);
 
                 Document doc = builder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8"))));
 
-                NodeList list = doc.getElementsByTagName("value");
+                NodeList list = doc.getElementsByTagName("values");
 
-                Node data = doc.getChildNodes().item(0);
-                Node command = data.getChildNodes().item(0);
-                Node value = data.getChildNodes().item(1);
+                for (int i = 0; i < list.getLength(); i++){
+                    Element element = (Element)list.item(i);
 
-                int idOfCommand = Integer.parseInt(command.getTextContent());
+                    int id = Integer.parseInt(element.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
 
-                String valueString = value.getTextContent();
+                    switch (id) {
 
-                /*
+                        case 4:
 
-                idOfCommand:
+                            String name = element.getElementsByTagName("user").item(0).getChildNodes().item(0).getNodeValue();
 
-                1 - Get new user.
-                2 - Get new message.
-                3 -
+                            User newUser = new User(name, out);
 
-                */
+                            System.out.println("send new user" + name);
 
-                switch (idOfCommand) {
+                           // Model.sendNewUserToClients(name);
+                            System.out.println("add new user"+name);
+                            System.out.println("user name"+ newUser.getUserName());
 
-                    case 4:
+                            Model.addNewUser(newUser);
 
-                        User newUser = new User(valueString, out);
+                            System.out.println("send user list");
 
-                        Model.sendNewUserToClients(valueString);
+                            Model.sendUserListToClient(newUser);
 
-                        Model.addNewUser(newUser);
+                            break;
 
-                        Model.sendUserListToClient(newUser);
+                        case 5:
 
-                        break;
-
-                    case 5:
-
-                        Model.sendMessagsToClients(valueString);
+                            //Model.sendMessagsToClients(valueString);
 
 
-                        break;
+                            break;
 
-                    case 7:
-
-
+                        case 7:
 
 
-                        break;
+                            break;
 
-                    case 8:
+                        case 8:
 
 
-                        break;
+                            break;
+                    }
+
+                    //element.getElementsByTagName("message").item(0).getChildNodes().item(0).getNodeValue();
+
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ParserConfigurationException e) {
