@@ -504,11 +504,3 @@
 2016-09-15 23:25:11 INFO Controller.Controller: - Controller created.
 2016-09-15 23:25:11 INFO Controller.Controller: - Try to start server.
 2016-09-15 23:25:11 INFO Controller.StartProgram: - Controller created.
-2016-09-15 23:25:41 INFO Controller.StartProgram: - Start program.
-2016-09-15 23:25:41 INFO Controller.StartProgram: - View created.
-2016-09-15 23:25:41 INFO Controller.StartProgram: - Model created.
-2016-09-15 23:25:41 INFO Controller.Controller: - Controller created.
-2016-09-15 23:25:41 INFO Controller.Controller: - Try to start server.
-2016-09-15 23:25:50 INFO Model.Model: - New user connected!
-2016-09-15 23:25:57 INFO Model.Model: - New user connected!
-2016-09-15 23:26:04 INFO Model.Model: - New user connected!
