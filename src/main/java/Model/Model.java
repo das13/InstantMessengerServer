@@ -41,7 +41,8 @@ public class Model {
                     DocumentBuilder builder = f.newDocumentBuilder();
 
                     String xml = in.readUTF();
-                    System.out.println(xml);
+
+                    System.out.println("Get xml: " + xml);
 
                     Document doc = builder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8"))));
 
