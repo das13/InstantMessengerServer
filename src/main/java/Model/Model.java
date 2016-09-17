@@ -40,57 +40,47 @@ public class Model {
                     f.setValidating(false);
                     DocumentBuilder builder = f.newDocumentBuilder();
 
-                    String xml = in.readUTF();
+                    while(true) {
 
-                    System.out.println("Get xml: " + xml);
+                        String xml = in.readUTF();
 
-                    Document doc = builder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8"))));
+                        LOG.info("Server get xml: " + xml);
 
-                    NodeList list = doc.getElementsByTagName("values");
+                        Document doc = builder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8"))));
 
-                    for (int i = 0; i < list.getLength(); i++) {
-                        Element element = (Element) list.item(i);
+                        NodeList list = doc.getElementsByTagName("values");
 
-                        int id = Integer.parseInt(element.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
+                        for (int i = 0; i < list.getLength(); i++) {
+                            Element element = (Element) list.item(i);
 
-                        switch (id) {
+                            int id = Integer.parseInt(element.getElementsByTagName("id").item(0).getChildNodes().item(0).getNodeValue());
 
-                            case 4:
+                            switch (id) {
 
-                                String name = element.getElementsByTagName("user").item(0).getChildNodes().item(0).getNodeValue();
+                                case 4:
 
-                                User newUser = new User(name, out);
+                                    String name = element.getElementsByTagName("user").item(0).getChildNodes().item(0).getNodeValue();
 
-                                System.out.println("send new user" + name);
+                                    User newUser = new User(name, out);
 
-                              //  Model.sendNewUserToClients(name);
-                                System.out.println("add new user" + name);
-                                System.out.println("user name" + newUser.getUserName());
+                                    Model.sendNewUserToClients(name);
 
-                                Model.addNewUser(newUser);
+                                    Model.addNewUser(newUser);
 
-                                System.out.println("send user list");
+                                    Model.sendUserListToClient(newUser);
 
-                                Model.sendUserListToClient(newUser);
+                                    break;
 
-                                break;
+                                case 5:
 
-                            case 5:
+                                    String message = element.getElementsByTagName("message").item(0).getChildNodes().item(0).getNodeValue();
 
-                                //Model.sendMessagsToClients(valueString);
+                                    String user = element.getElementsByTagName("user").item(0).getChildNodes().item(0).getNodeValue();
 
+                                    Model.sendMessagsToClients(message,user);
 
-                                break;
-
-                            case 7:
-
-
-                                break;
-
-                            case 8:
-
-
-                                break;
+                                    break;
+                            }
                         }
                     }
 
@@ -123,9 +113,9 @@ public class Model {
         }
             xml = xml + "</data>";
 
-        System.out.println("list - "+userList.size());
+        System.out.println("list size - "+userList.size());
 
-        System.out.println(xml);
+        System.out.println("XML send" + xml);
 
         try {
             out.writeUTF(xml);
@@ -134,11 +124,19 @@ public class Model {
         }
     }
 
-    public static void sendMessagsToClients(String message) throws IOException {
+    public static void sendMessagsToClients(String message, String user) throws IOException {
 
         for (int i = 0; i < userList.size(); i++){
             DataOutputStream out = userList.get(i).getDataOutputStream();
-            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><data><command>5</command><value>"+ message +"</value></data>";
+            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                    "<data>" +
+                    "<values>" +
+                    "<id>"+ 5 +"</id>" +
+                    "<message>"+user+ ": "+ message +"</message>" +
+                    "<user></user >"+
+                    "</values>" +
+                    "</data>";
+            System.out.println("Send xml");
             out.writeUTF(xml);
         }
     }
@@ -156,7 +154,7 @@ public class Model {
                                 "<message></message>" +
                                 "<user>"+ user +"</user>" +
                             "</values>" +
-                         "</data>";;
+                         "</data>";
             out.writeUTF(xml);
         }
     }
