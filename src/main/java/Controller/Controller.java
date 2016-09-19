@@ -24,7 +24,7 @@ public class Controller {
 
         try {
             LOG.info("Try to start server.");
-            Model.startServer();
+            model.startServer();
         } catch (IOException e) {
             e.printStackTrace();
         }

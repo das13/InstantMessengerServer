@@ -34,7 +34,7 @@ public class Model {
                 try{
 
                     DataOutputStream out = new DataOutputStream(accept.getOutputStream());
-                    DataInput in = new DataInputStream(accept.getInputStream());
+                    DataInputStream in = new DataInputStream(accept.getInputStream());
 
                     DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
                     f.setValidating(false);
@@ -61,9 +61,11 @@ public class Model {
 
                                     String name = element.getElementsByTagName("user").item(0).getChildNodes().item(0).getNodeValue();
 
-                                    User newUser = new User(name, out);
+                                    int idOfUser = userList.size();
 
-                                    Model.sendNewUserToClients(name);
+                                    User newUser = new User(name, in, out, idOfUser);
+
+                                    Model.sendNewUserToClients(name, idOfUser);
 
                                     Model.addNewUser(newUser);
 
@@ -80,6 +82,16 @@ public class Model {
                                     Model.sendMessagsToClients(message,user);
 
                                     break;
+
+                                case 8:
+
+                                    int index = Integer.parseInt(element.getElementsByTagName("userId").item(0).getChildNodes().item(0).getNodeValue());
+
+                                    deleteUserDromClients(userList.get(index).getUserName(),index);
+
+                                    userList.get(index).closeStream();
+
+                                    userList.remove(index);
                             }
                         }
                     }
@@ -103,13 +115,15 @@ public class Model {
 
     public static void sendUserListToClient(User user){
 
+        System.out.println("send user list to client");
+
         DataOutputStream out = user.getDataOutputStream();
 
         String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><data>";
 
         for (int i = 0; i < userList.size(); i++){
 
-            xml = xml + "<values><id>"+ 7 +"</id><message></message><user>" + userList.get(i).getUserName() + "</user></values>";
+            xml = xml + "<values><id>"+ 7 +"</id><message></message><user>" + userList.get(i).getUserName() + "</user><userId>" + userList.get(i).getId() + "</userId></values>";
         }
             xml = xml + "</data>";
 
@@ -141,7 +155,26 @@ public class Model {
         }
     }
 
-    public static void sendNewUserToClients(String user) throws IOException {
+    public static void deleteUserDromClients(String user, int id) throws IOException {
+
+        System.out.println("del new user (update) ");
+
+        for (int i = 0; i < userList.size(); i++){
+            DataOutputStream out = userList.get(i).getDataOutputStream();
+            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+                    "<data>" +
+                    "<values>" +
+                    "<id>"+ 9 +"</id>" +
+                    "<message></message>" +
+                    "<user>"+ user +"</user>" +
+                    "<userId>" + id + "</userId>" +
+                    "</values>" +
+                    "</data>";
+            out.writeUTF(xml);
+        }
+    }
+
+    public static void sendNewUserToClients(String user, int id) throws IOException {
 
         System.out.println("Send new user (update) ");
 
@@ -153,6 +186,7 @@ public class Model {
                                 "<id>"+ 4 +"</id>" +
                                 "<message></message>" +
                                 "<user>"+ user +"</user>" +
+                                "<userId>" + id + "</userId>" +
                             "</values>" +
                          "</data>";
             out.writeUTF(xml);
