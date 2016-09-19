@@ -31,14 +31,6 @@ public class User {
         return stream;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setDataOutputStream(DataOutputStream socket) {
-        this.stream = socket;
-    }
-
     public void setId(int id) {
         id = id;
     }
@@ -51,6 +43,7 @@ public class User {
         try {
             inStream.close();
             stream.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
