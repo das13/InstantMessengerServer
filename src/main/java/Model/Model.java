@@ -6,9 +6,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Model {
-
 
     private static final Logger LOG = Logger.getLogger(Model.class);
 
@@ -20,7 +20,15 @@ public class Model {
 
     public void startServer() throws IOException {
 
-        ServerSocket ss = new ServerSocket(4545);
+        FileInputStream fin;
+        Properties property = new Properties();
+
+        fin = new FileInputStream("src/main/resources/config.properties");
+        property.load(fin);
+
+        int PORT  = Integer.parseInt(property.getProperty("PORT"));
+
+        ServerSocket ss = new ServerSocket(PORT);
 
         while (true){
             Socket accept = ss.accept();
@@ -29,7 +37,6 @@ public class Model {
             thread.setDaemon(true);
             thread.start();
         }
-
     }
 
     public static void addNewUser(User user){
