@@ -45,7 +45,7 @@ public class User {
             stream.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("IOException: Can't close the streams. "+ e);
         }
     }
 }

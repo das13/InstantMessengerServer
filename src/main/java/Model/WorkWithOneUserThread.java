@@ -1,5 +1,6 @@
 package Model;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class WorkWithOneUserThread extends Thread {
+
+    private static final Logger LOG = Logger.getLogger(WorkWithOneUserThread.class);
 
     private Socket socket;
 
@@ -96,11 +99,11 @@ public class WorkWithOneUserThread extends Thread {
                 }
             }
         }catch (IOException e){
-            e.printStackTrace();
+            LOG.error("IOException: "+ e);
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            LOG.error("ParserConfigurationException: "+ e);
         } catch (SAXException e) {
-            e.printStackTrace();
+            LOG.error("SAXException: "+ e);
         }
 
        // LOG.info("New user connected!");

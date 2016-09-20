@@ -42,6 +42,7 @@ public class Model {
     public static void addNewUser(User user){
         userList.add(user);
     }
+
     public static void deleteUser(User user){
         userList.remove(user);
     }
@@ -67,7 +68,7 @@ public class Model {
         try {
             out.writeUTF(xml);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("IOException: " + e);
         }
     }
 
