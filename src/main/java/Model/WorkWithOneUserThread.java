@@ -79,6 +79,8 @@ public class WorkWithOneUserThread extends Thread {
 
                             Model.incIdCounter();
 
+                            LOG.info("New user added!");
+
                             break;
 
                         case GET_MESSAGE:
@@ -89,6 +91,8 @@ public class WorkWithOneUserThread extends Thread {
 
                             Model.sendMessagsToClients(message,user);
 
+                            LOG.info("Get new message!");
+
                             break;
 
                         case DELETE_USER:
@@ -96,7 +100,6 @@ public class WorkWithOneUserThread extends Thread {
                             int id8 = Integer.parseInt(element.getElementsByTagName("userId").item(0).getChildNodes().item(0).getNodeValue());
 
                             System.out.println("case 8 - id - "+ id8);
-
 
                             ArrayList<User> tempList = Model.getUserList();
 
@@ -111,9 +114,11 @@ public class WorkWithOneUserThread extends Thread {
 
                             Model.deleteUser(id8);
 
-                            //in.close();
-                            //out.close();
-                            //socket.close();
+                            socket.close();
+                            in.close();
+                            out.close();
+
+                            this.stop();
                     }
                 }
             }
