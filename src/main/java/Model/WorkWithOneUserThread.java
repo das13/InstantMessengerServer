@@ -99,8 +99,6 @@ public class WorkWithOneUserThread extends Thread {
 
                             int id8 = Integer.parseInt(element.getElementsByTagName("userId").item(0).getChildNodes().item(0).getNodeValue());
 
-                            System.out.println("case 8 - id - "+ id8);
-
                             ArrayList<User> tempList = Model.getUserList();
 
                             for (int i8 = 0; i < tempList.size(); i8++){
@@ -108,6 +106,7 @@ public class WorkWithOneUserThread extends Thread {
                                 if (tempList.get(i8).getId() == id8){
 
                                     Model.deleteUserDromClients(tempList.get(i8).getUserName(),id8);
+
                                     break;
                                 }
                             }

@@ -57,8 +57,6 @@ public class Model {
 
     public static void deleteUser(int id){
 
-        System.out.println("Need id" + id);
-
         for (int i = 0; i < userList.size(); i++){
 
             if (userList.get(i).getId() == id){
