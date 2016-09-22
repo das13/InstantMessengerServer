@@ -15,10 +15,15 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class WorkWithOneUserThread extends Thread {
 
     private static final Logger LOG = Logger.getLogger(WorkWithOneUserThread.class);
+
+    private final static int GET_NEW_USER = 4;
+    private final static int GET_MESSAGE = 5;
+    private final static int DELETE_USER = 8;
 
     private Socket socket;
 
@@ -43,7 +48,7 @@ public class WorkWithOneUserThread extends Thread {
 
                 String xml = in.readUTF();
 
-                //LOG.info("Server get xml: " + xml);
+                LOG.debug("Server get xml: " + xml);
 
                 Document doc = builder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("utf-8"))));
 
@@ -56,23 +61,27 @@ public class WorkWithOneUserThread extends Thread {
 
                     switch (id) {
 
-                        case 4:
+                        case GET_NEW_USER:
 
                             String name = element.getElementsByTagName("user").item(0).getChildNodes().item(0).getNodeValue();
 
-                            int idOfUser = Model.getUserList().size();
+                            int idOfUser = Model.getIdCounter();
 
-                            User newUser = new User(name, in, out, idOfUser);
+                            User newUser = new User(name,socket, in, out, idOfUser);
 
                             Model.sendNewUserToClients(name, idOfUser);
+
+                            Model.sendUserNameAndId(newUser);
 
                             Model.addNewUser(newUser);
 
                             Model.sendUserListToClient(newUser);
 
+                            Model.incIdCounter();
+
                             break;
 
-                        case 5:
+                        case GET_MESSAGE:
 
                             String message = element.getElementsByTagName("message").item(0).getChildNodes().item(0).getNodeValue();
 
@@ -82,19 +91,29 @@ public class WorkWithOneUserThread extends Thread {
 
                             break;
 
-                        case 8:
+                        case DELETE_USER:
 
-                            int index = Integer.parseInt(element.getElementsByTagName("userId").item(0).getChildNodes().item(0).getNodeValue());
+                            int id8 = Integer.parseInt(element.getElementsByTagName("userId").item(0).getChildNodes().item(0).getNodeValue());
 
-                            Model.deleteUserDromClients(Model.getUserList().get(index).getUserName(),index);
+                            System.out.println("case 8 - id - "+ id8);
 
-                            Model.deleteUser(Model.getUserList().get(index));
 
-                            //Model.getUserList().get(index).closeStream();
+                            ArrayList<User> tempList = Model.getUserList();
 
-                            in.close();
-                            out.close();
-                            socket.close();
+                            for (int i8 = 0; i < tempList.size(); i8++){
+
+                                if (tempList.get(i8).getId() == id8){
+
+                                    Model.deleteUserDromClients(tempList.get(i8).getUserName(),id8);
+                                    break;
+                                }
+                            }
+
+                            Model.deleteUser(id8);
+
+                            //in.close();
+                            //out.close();
+                            //socket.close();
                     }
                 }
             }
@@ -105,8 +124,6 @@ public class WorkWithOneUserThread extends Thread {
         } catch (SAXException e) {
             LOG.error("SAXException: "+ e);
         }
-
-       // LOG.info("New user connected!");
+       LOG.info("New user connected!");
     }
-
 }

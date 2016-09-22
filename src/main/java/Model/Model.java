@@ -14,6 +14,8 @@ public class Model {
 
     private static ArrayList<User> userList = new ArrayList<User>();
 
+    public static int idCounter = 1;
+
     public static ArrayList<User> getUserList(){
         return userList;
     }
@@ -43,30 +45,41 @@ public class Model {
         userList.add(user);
     }
 
-    public static void deleteUser(User user){
-        userList.remove(user);
+    public static int getIdCounter(){
+
+        return idCounter;
+    }
+
+    public static void incIdCounter(){
+
+        idCounter++;
+    }
+
+    public static void deleteUser(int id){
+
+        System.out.println("Need id" + id);
+
+        for (int i = 0; i < userList.size(); i++){
+
+            if (userList.get(i).getId() == id){
+
+                userList.get(i).closeStream();
+
+                userList.remove(i);
+
+                LOG.info("User deleted");
+
+                break;
+            }
+        }
     }
 
     public static void sendUserListToClient(User user){
 
-        System.out.println("send user list to client");
-
         DataOutputStream out = user.getDataOutputStream();
 
-        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><data>";
-
-        for (int i = 0; i < userList.size(); i++){
-
-            xml = xml + "<values><id>"+ 7 +"</id><message></message><user>" + userList.get(i).getUserName() + "</user><userId>" + userList.get(i).getId() + "</userId></values>";
-        }
-            xml = xml + "</data>";
-
-        System.out.println("list size - "+userList.size());
-
-        System.out.println("XML send" + xml);
-
         try {
-            out.writeUTF(xml);
+            out.writeUTF(xmlGeneration.sendUserListToClient());
         } catch (IOException e) {
             LOG.error("IOException: " + e);
         }
@@ -76,55 +89,35 @@ public class Model {
 
         for (int i = 0; i < userList.size(); i++){
             DataOutputStream out = userList.get(i).getDataOutputStream();
-            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "<data>" +
-                    "<values>" +
-                    "<id>"+ 5 +"</id>" +
-                    "<message>"+user+ ": "+ message +"</message>" +
-                    "<user></user >"+
-                    "</values>" +
-                    "</data>";
-            System.out.println("Send xml");
-            out.writeUTF(xml);
+
+            out.writeUTF(xmlGeneration.sendMessage(message,user));
         }
     }
 
     public static void deleteUserDromClients(String user, int id) throws IOException {
 
-        System.out.println("del new user (update) ");
-
         for (int i = 0; i < userList.size(); i++){
+
             DataOutputStream out = userList.get(i).getDataOutputStream();
-            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "<data>" +
-                    "<values>" +
-                    "<id>"+ 9 +"</id>" +
-                    "<message></message>" +
-                    "<user>"+ user +"</user>" +
-                    "<userId>" + id + "</userId>" +
-                    "</values>" +
-                    "</data>";
-            out.writeUTF(xml);
+
+            out.writeUTF(xmlGeneration.deleteUser(user, id));
         }
+    }
+
+    public static void sendUserNameAndId(User user) throws IOException {
+
+        DataOutputStream out = user.getDataOutputStream();
+
+        out.writeUTF(xmlGeneration.sendUserNameAndId(user));
     }
 
     public static void sendNewUserToClients(String user, int id) throws IOException {
 
-        System.out.println("Send new user (update) ");
-
         for (int i = 0; i < userList.size(); i++){
+
             DataOutputStream out = userList.get(i).getDataOutputStream();
-            String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                         "<data>" +
-                            "<values>" +
-                                "<id>"+ 4 +"</id>" +
-                                "<message></message>" +
-                                "<user>"+ user +"</user>" +
-                                "<userId>" + id + "</userId>" +
-                            "</values>" +
-                         "</data>";
-            System.out.println("for - "+ user);
-            out.writeUTF(xml);
+
+            out.writeUTF(xmlGeneration.sendNewUser(user,id));
         }
     }
 }
