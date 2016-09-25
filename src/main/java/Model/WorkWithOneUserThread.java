@@ -69,13 +69,13 @@ public class WorkWithOneUserThread extends Thread {
 
                             User newUser = new User(name,socket, in, out, idOfUser);
 
-                            Model.sendNewUserToClients(name, idOfUser);
+                            Model.sendNewUserNotificationToClients(name, id);
 
                             Model.sendUserNameAndId(newUser);
 
                             Model.addNewUser(newUser);
 
-                            Model.sendUserListToClient(newUser);
+                            Model.sendUserListToClients();
 
                             Model.incIdCounter();
 

@@ -72,14 +72,13 @@ public class Model {
         }
     }
 
-    public static void sendUserListToClient(User user){
+    public static void sendUserListToClients() throws IOException {
 
-        DataOutputStream out = user.getDataOutputStream();
+        for (int i = 0; i < userList.size(); i++){
 
-        try {
+            DataOutputStream out = userList.get(i).getDataOutputStream();
+
             out.writeUTF(xmlGeneration.sendUserListToClient());
-        } catch (IOException e) {
-            LOG.error("IOException: ", e);
         }
     }
 
@@ -109,7 +108,7 @@ public class Model {
         out.writeUTF(xmlGeneration.sendUserNameAndId(user));
     }
 
-    public static void sendNewUserToClients(String user, int id) throws IOException {
+    public static void sendNewUserNotificationToClients(String user, int id) throws IOException {
 
         for (int i = 0; i < userList.size(); i++){
 
