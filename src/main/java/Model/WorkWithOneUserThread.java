@@ -117,7 +117,7 @@ public class WorkWithOneUserThread extends Thread {
                             in.close();
                             out.close();
 
-                            this.stop();
+                            this.interrupt();
                     }
                 }
             }
