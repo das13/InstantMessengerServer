@@ -122,11 +122,11 @@ public class WorkWithOneUserThread extends Thread {
                 }
             }
         }catch (IOException e){
-            LOG.error("IOException: "+ e);
+            LOG.error("IOException: ", e);
         } catch (ParserConfigurationException e) {
-            LOG.error("ParserConfigurationException: "+ e);
+            LOG.error("ParserConfigurationException: ", e);
         } catch (SAXException e) {
-            LOG.error("SAXException: "+ e);
+            LOG.error("SAXException: ", e);
         }
        LOG.info("New user connected!");
     }

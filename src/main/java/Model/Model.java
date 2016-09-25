@@ -79,7 +79,7 @@ public class Model {
         try {
             out.writeUTF(xmlGeneration.sendUserListToClient());
         } catch (IOException e) {
-            LOG.error("IOException: " + e);
+            LOG.error("IOException: ", e);
         }
     }
 
