@@ -3,6 +3,7 @@ package Model;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -28,16 +29,31 @@ public class Model {
         fin = new FileInputStream("src/main/resources/config.properties");
         property.load(fin);
 
-        int PORT  = Integer.parseInt(property.getProperty("PORT"));
+        try {
 
-        ServerSocket ss = new ServerSocket(PORT);
+            int PORT  = Integer.parseInt(property.getProperty("PORT"));
 
-        while (true){
-            Socket accept = ss.accept();
+            ServerSocket ss = new ServerSocket(PORT);
 
-            WorkWithOneUserThread thread = new WorkWithOneUserThread(accept);
-            thread.setDaemon(true);
-            thread.start();
+            while (true) {
+                Socket accept = ss.accept();
+
+                WorkWithOneUserThread thread = new WorkWithOneUserThread(accept);
+                thread.setDaemon(true);
+                thread.start();
+            }
+
+        }catch (NumberFormatException e){
+
+            LOG.error("Error with config.properties", e);
+
+        }catch (NullPointerException e){
+
+            LOG.error("Error with config.properties", e);
+
+        }catch (ConnectException e) {
+
+            LOG.error("No connection with server!", e);
         }
     }
 
